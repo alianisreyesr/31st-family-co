@@ -1,132 +1,188 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { categories, formatPrice, products } from './data/catalog.js'
 
-const products = [
-  { name: 'Roots Cap', color: 'Negro / Crema', price: '$38', badge: 'Drop 01' },
-  { name: 'Family Script', color: 'Oliva / Blanco', price: '$38', badge: 'Edición limitada' },
-  { name: '31st Classic', color: 'Carbón / Arena', price: '$38', badge: 'Próximamente' },
-]
+const whatsappUrl = 'https://wa.me/17874648291'
+const instagramUrl = 'https://www.instagram.com/31stfamilyco/?hl=en'
+
+function ProductImage({ product }) {
+  const [imageFailed, setImageFailed] = useState(false)
+
+  if (!product.image || imageFailed) {
+    return (
+      <div className="image-placeholder" aria-label={product.imageAlt} role="img">
+        <span>31ST</span>
+        <small>{product.category}</small>
+      </div>
+    )
+  }
+
+  return <img src={product.image} alt={product.imageAlt} loading="lazy" onError={() => setImageFailed(true)} />
+}
+
+function ProductCard({ product, onRestock }) {
+  const isAvailable = product.status === 'available'
+
+  return (
+    <article className="product-card">
+      <div className="product-media">
+        <ProductImage product={product} />
+        <span className={isAvailable ? 'status-badge available' : 'status-badge'}>
+          {isAvailable ? 'Disponible' : 'Agotado'}
+        </span>
+      </div>
+      <div className="product-info">
+        <div>
+          <p className="product-category">{product.category}</p>
+          <h3>{product.name}</h3>
+          <p className="product-color">{product.color}</p>
+        </div>
+        <strong>{formatPrice(product.price)}</strong>
+      </div>
+      {isAvailable ? (
+        <button className="product-action" type="button" onClick={() => window.alert('El checkout se conectará con Stripe en la próxima fase.')}>Añadir al carrito <span>→</span></button>
+      ) : (
+        <button className="product-action" type="button" onClick={() => onRestock(product.name)}>Avísame del restock <span>→</span></button>
+      )}
+    </article>
+  )
+}
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [activeCategory, setActiveCategory] = useState('Todos')
   const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [notice, setNotice] = useState('')
+
+  const featuredProducts = products.filter((product) => product.status === 'available')
+  const archivedProducts = useMemo(
+    () => products.filter((product) => product.status === 'sold-out' && (activeCategory === 'Todos' || product.category === activeCategory)),
+    [activeCategory],
+  )
 
   const submitEmail = (event) => {
     event.preventDefault()
     if (!email.trim()) return
-    setSubmitted(true)
+    setNotice('Estás dentro. Te avisaremos primero sobre el próximo drop.')
     setEmail('')
+  }
+
+  const requestRestock = (productName) => {
+    setNotice(`Te avisaremos cuando ${productName} vuelva a estar disponible.`)
+    document.querySelector('#familia')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
     <div>
-      <div className="announcement">ENVÍO GRATIS EN ÓRDENES DE $75+ · ÚNETE A LA FAMILIA</div>
+      <div className="announcement">BORN IN PUERTO RICO · BUILT TO STAND OUT · EST. 2024</div>
 
       <header className="header">
-        <a className="logo" href="#inicio" aria-label="31st Family Co, inicio">31ST<span>FAMILY CO</span></a>
-        <button className="menu-button" type="button" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
-          {menuOpen ? 'Cerrar' : 'Menú'}
-        </button>
+        <a className="logo" href="#inicio" aria-label="31st Family Co, inicio">31ST<span>FAMILY CO.</span></a>
+        <button className="menu-button" type="button" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Cerrar' : 'Menú'}</button>
         <nav className={menuOpen ? 'nav nav-open' : 'nav'} aria-label="Navegación principal">
-          <a href="#drop" onClick={() => setMenuOpen(false)}>El drop</a>
-          <a href="#historia" onClick={() => setMenuOpen(false)}>Nuestra historia</a>
-          <a href="#familia" onClick={() => setMenuOpen(false)}>Únete</a>
-          <a href="https://www.instagram.com/31stfamilyco/?hl=en" target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Instagram</a>
+          <a href="#shop" onClick={() => setMenuOpen(false)}>Comprar</a>
+          <a href="#archivo" onClick={() => setMenuOpen(false)}>Archivo</a>
+          <a href="#historia" onClick={() => setMenuOpen(false)}>Historia</a>
+          <a href={instagramUrl} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Instagram</a>
+          <a className="nav-cart" href="#shop" onClick={() => setMenuOpen(false)}>Bolsa (0)</a>
         </nav>
       </header>
 
       <main>
         <section className="hero" id="inicio">
+          <div className="hero-grid" aria-hidden="true"><span>31</span></div>
           <div className="hero-content">
-            <p className="eyebrow">31st Family Co · Puerto Rico</p>
+            <p className="eyebrow">31st Family Co. · Puerto Rico</p>
             <h1>Más que una marca.<br /><em>Somos familia.</em></h1>
-            <p className="hero-copy">Gorras premium creadas desde nuestras raíces para quienes llevan su historia con orgullo.</p>
+            <p className="hero-copy">Streetwear nacido en Puerto Rico, creado desde nuestras raíces para quienes no vinieron a encajar.</p>
             <div className="hero-actions">
-              <a className="button button-light" href="#drop">Ver el drop actual</a>
-              <a className="text-link" href="#historia">Conoce nuestra historia <span>→</span></a>
+              <a className="button button-light" href="#shop">Comprar HeadBands</a>
+              <a className="text-link" href="#archivo">Explorar el archivo <span>→</span></a>
             </div>
           </div>
-          <a className="scroll-cue" href="#drop">Explorar <span>↓</span></a>
+          <div className="hero-stamp"><span>EST.</span><strong>2024</strong><span>FAMILY CO.</span></div>
         </section>
 
-        <section className="section drop-section" id="drop">
+        <section className="shop section" id="shop">
           <div className="section-heading">
             <div>
-              <p className="eyebrow dark">Drop 01</p>
-              <h2>Hecho para representar.</h2>
+              <p className="eyebrow dark">Disponible ahora</p>
+              <h2>Everyday essentials.</h2>
             </div>
-            <p>Diseños con intención, materiales seleccionados y una identidad que se lleva todos los días.</p>
+            <p>Las piezas disponibles ahora. Diseñadas para acompañar cada día y representar la familia donde vayas.</p>
           </div>
-          <div className="product-grid">
-            {products.map((product, index) => (
-              <article className={`product-card tone-${index + 1}`} key={product.name}>
-                <div className="product-image" role="img" aria-label={`${product.name}, espacio para fotografía del producto`}>
-                  <span>{product.badge}</span>
-                  <div className="cap-mark">31ST</div>
-                </div>
-                <div className="product-info">
-                  <div>
-                    <h3>{product.name}</h3>
-                    <p>{product.color}</p>
-                  </div>
-                  <strong>{product.price}</strong>
-                </div>
-                <button className="product-button" type="button">Ver detalles <span>→</span></button>
-              </article>
-            ))}
+          <div className="product-grid featured-grid">
+            {featuredProducts.map((product) => <ProductCard product={product} key={product.id} onRestock={requestRestock} />)}
           </div>
-          <div className="center-action"><button className="button button-dark" type="button">Comprar la colección</button></div>
+          <p className="availability-note">Inventario limitado. El estado final de disponibilidad se confirmará al conectar el sistema de inventario.</p>
         </section>
 
         <section className="statement" id="historia">
-          <div className="statement-photo" aria-hidden="true"><span>31</span></div>
+          <div className="statement-mark" aria-hidden="true">31ST</div>
           <div className="statement-copy">
             <p className="eyebrow">Nuestra historia</p>
-            <h2>Todo comienza con la familia.</h2>
-            <p>31st Family Co nació de una idea simple: lo que construimos juntos tiene más fuerza. Cada pieza es un recordatorio de las raíces que nos forman y de la visión que nos mueve.</p>
-            <p>No buscamos seguir tendencias. Creamos piezas para las personas que entienden que estilo, esfuerzo y pertenencia pueden ir de la mano.</p>
-            <a className="text-link light-link" href="#familia">Conoce a la familia <span>→</span></a>
+            <h2>De las raíces familiares a un futuro sólido.</h2>
+            <p>31st Family Co es una marca nacida en Puerto Rico. Construimos piezas con gráficos atrevidos, creatividad cruda y la convicción de que la autoexpresión no necesita permiso.</p>
+            <p>No solo hacemos streetwear. Construimos una familia para quienes llevan su identidad con orgullo y están creando su propio camino.</p>
+            <a className="text-link light-link" href={instagramUrl} target="_blank" rel="noreferrer">Conoce la familia <span>→</span></a>
           </div>
         </section>
 
-        <section className="values section">
-          <p className="eyebrow dark">Lo que representamos</p>
-          <div className="values-grid">
-            <div><span>01</span><h3>Familia</h3><p>Construimos desde la conexión, el respeto y las raíces compartidas.</p></div>
-            <div><span>02</span><h3>Autenticidad</h3><p>Sin filtros. Una identidad real que se lleva con orgullo.</p></div>
-            <div><span>03</span><h3>Calidad</h3><p>Detalles pensados para acompañarte en cada día.</p></div>
-            <div><span>04</span><h3>Comunidad</h3><p>Una marca crece cuando su gente también crece.</p></div>
+        <section className="archive section" id="archivo">
+          <div className="section-heading archive-heading">
+            <div>
+              <p className="eyebrow dark">Archivo de drops</p>
+              <h2>Lo que se fue, dejó marca.</h2>
+            </div>
+            <p>Estas piezas están agotadas. Únete a la lista para enterarte primero de restocks y próximos lanzamientos.</p>
           </div>
+          <div className="category-filter" role="tablist" aria-label="Filtrar archivo por categoría">
+            {categories.map((category) => (
+              <button key={category} type="button" className={activeCategory === category ? 'filter active' : 'filter'} onClick={() => setActiveCategory(category)}>{category}</button>
+            ))}
+          </div>
+          <div className="product-grid archive-grid">
+            {archivedProducts.map((product) => <ProductCard product={product} key={product.id} onRestock={requestRestock} />)}
+          </div>
+        </section>
+
+        <section className="inventory-promise">
+          <p className="eyebrow">La promesa 31st</p>
+          <div><span>01</span><p>Diseño con identidad</p></div>
+          <div><span>02</span><p>Hecho para destacar</p></div>
+          <div><span>03</span><p>Construido en familia</p></div>
         </section>
 
         <section className="signup" id="familia">
           <div>
             <p className="eyebrow">Acceso anticipado</p>
-            <h2>El próximo drop<br />está cerca.</h2>
+            <h2>El próximo drop<br />empieza aquí.</h2>
           </div>
           <div className="signup-content">
-            <p>Únete a la Family List para recibir acceso temprano, restocks y lanzamientos exclusivos.</p>
+            <p>Únete a la Family List para recibir restocks, acceso temprano y noticias directamente de 31st Family Co.</p>
             <form onSubmit={submitEmail}>
               <label className="sr-only" htmlFor="email">Tu email</label>
               <input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Tu email" required />
-              <button type="submit">Quiero acceso</button>
+              <button type="submit">Unirme</button>
             </form>
-            {submitted && <p className="success" role="status">Estás dentro. Bienvenido a la familia.</p>}
+            {notice && <p className="success" role="status">{notice}</p>}
             <small>Sin spam. Solo drops, restocks y noticias de la familia.</small>
           </div>
         </section>
       </main>
 
       <footer className="footer">
-        <div className="footer-logo">31ST<span>FAMILY CO</span></div>
-        <p>Más que una marca, somos familia.</p>
-        <div className="footer-links">
-          <a href="#drop">Colección</a>
-          <a href="#historia">Historia</a>
-          <a href="https://www.instagram.com/31stfamilyco/?hl=en" target="_blank" rel="noreferrer">Instagram</a>
-          <a href="mailto:hello@31stfamilyco.com">Contacto</a>
+        <div className="footer-top">
+          <div><div className="footer-logo">31ST<span>FAMILY CO.</span></div><p>Born in Puerto Rico.<br />Built to stand out.</p></div>
+          <div className="footer-links">
+            <a href="#shop">Comprar</a>
+            <a href="#archivo">Archivo</a>
+            <a href={instagramUrl} target="_blank" rel="noreferrer">Instagram</a>
+            <a href="https://www.tiktok.com/@31stfamilyco" target="_blank" rel="noreferrer">TikTok</a>
+            <a href={whatsappUrl} target="_blank" rel="noreferrer">WhatsApp</a>
+            <a href="mailto:31stfamilyco@gmail.com">Email</a>
+          </div>
         </div>
-        <small>© {new Date().getFullYear()} 31st Family Co. Todos los derechos reservados.</small>
+        <div className="footer-bottom"><small>© {new Date().getFullYear()} 31st Family Co. Todos los derechos reservados.</small><small>Puerto Rico · Estados Unidos</small></div>
       </footer>
     </div>
   )
