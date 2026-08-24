@@ -1,0 +1,76 @@
+.faq {
+  background: var(--cream);
+}
+
+.faq-list {
+  max-width: 860px;
+  border-top: 1px solid var(--line);
+}
+
+.faq-list details {
+  border-bottom: 1px solid var(--line);
+}
+
+.faq-list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 0;
+  font-size: clamp(16px, 1.6vw, 19px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  list-style: none;
+}
+
+/* Oculta el triangulito nativo en Safari sin perder el comportamiento. */
+.faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-list summary:hover {
+  opacity: 0.65;
+}
+
+.faq-icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+}
+
+.faq-icon::before,
+.faq-icon::after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+  transition: transform 0.2s var(--ease);
+}
+
+.faq-icon::before {
+  top: 6px;
+  left: 0;
+  width: 14px;
+  height: 2px;
+}
+
+.faq-icon::after {
+  top: 0;
+  left: 6px;
+  width: 2px;
+  height: 14px;
+}
+
+.faq-list details[open] .faq-icon::after {
+  transform: scaleY(0);
+}
+
+.faq-list details p {
+  max-width: 660px;
+  margin: 0;
+  padding: 0 0 26px;
+  font-size: var(--size-body-sm);
+  line-height: 1.75;
+  color: var(--muted-cream);
+}

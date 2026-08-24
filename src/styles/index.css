@@ -1,0 +1,23 @@
+/*
+ * Punto de entrada de estilos. Se importa solo desde `main.jsx` (nunca desde un
+ * componente) para que el build de SSR no tenga que resolver CSS.
+ *
+ * Las fuentes ya NO se cargan con @import: ahora van con <link> en index.html.
+ * Un @import dentro del CSS obliga al navegador a descargar y parsear la hoja
+ * antes de descubrir la fuente, encadenando dos viajes de red antes de pintar
+ * el primer texto.
+ */
+@import './tokens.css';
+@import './base.css';
+@import './header.css';
+@import './hero.css';
+@import './products.css';
+@import './modal.css';
+@import './statement.css';
+@import './promise.css';
+@import './faq.css';
+@import './signup.css';
+@import './footer.css';
+@import './sticky-buy.css';
+@import './legal.css';
+@import './responsive.css';

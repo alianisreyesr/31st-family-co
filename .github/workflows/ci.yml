@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # `npm ci` en vez de `npm install`: instala exactamente lo del lockfile y
+      # falla si package.json y el lock se han desincronizado.
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Formato
+        run: npm run format:check
+
+      - name: Tests
+        run: npm test
+
+      # Compila con prerender: así el pipeline también cubre el paso de SSG, que
+      # es donde se generan las metas y el sitemap.
+      - name: Build
+        run: npm run build:ssg

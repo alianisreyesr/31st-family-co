@@ -1,0 +1,43 @@
+.values {
+  background: #ddd5c8;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 56px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.values-grid > li {
+  min-height: 200px;
+  padding: 0 25px;
+  border-left: 1px solid var(--line);
+}
+
+.values-grid > li:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.values-grid span {
+  font: 500 var(--size-micro) / 1 var(--font-mono);
+  color: var(--muted);
+}
+
+.values-grid h3 {
+  margin: 42px 0 11px;
+  font-size: 21px;
+  letter-spacing: -0.05em;
+}
+
+.values-grid p {
+  max-width: 220px;
+  margin: 0;
+  /* Subido de 12px y oscurecido: el gris anterior daba 4.53:1, al filo del
+   * mínimo, y a 12px eso se lee mal en cualquier pantalla al sol. */
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}

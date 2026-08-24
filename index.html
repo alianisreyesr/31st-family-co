@@ -3,8 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="31st Family Co — Más que una marca, somos familia." />
+    <meta name="theme-color" content="#121210" />
+
+    <!--
+      Las fuentes van aquí, no en un @import del CSS: así el navegador las pide
+      en paralelo con la hoja de estilos en lugar de esperar a parsearla.
+      Se cargan 7 archivos en total (antes 11): Manrope 400/700/800,
+      Playfair 500 y su cursiva, DM Mono 400/500.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap"
+    />
+
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="canonical" href="https://31stfamilyco.com/" />
+
+    <!--
+      `npm run build:ssg` cambia esto a `noindex, nofollow` cuando el despliegue
+      no es el dominio de producción: una vista previa indexada competiría como
+      contenido duplicado contra el sitio real de la marca.
+    -->
+    <meta name="robots" content="index, follow" />
+
     <title>31st Family Co | Más que una marca, somos familia</title>
+    <meta
+      name="description"
+      content="Streetwear nacido en Puerto Rico desde 2024. Únete a la Family List para el acceso anticipado al próximo drop y explora el archivo de piezas agotadas."
+    />
+
+    <!--
+      Open Graph y Twitter: sin esto, compartir el link por WhatsApp o en
+      Stories mostraba solo la URL pelada, sin imagen ni titular.
+      La tarjeta es una foto real del producto con el logotipo, generada por
+      `node scripts/build-brand-assets.mjs`.
+      `npm run build:ssg` reescribe estos valores por ruta.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="31st Family Co" />
+    <meta property="og:locale" content="es_PR" />
+    <meta property="og:title" content="31st Family Co | Más que una marca, somos familia" />
+    <meta
+      property="og:description"
+      content="Streetwear nacido en Puerto Rico desde 2024. Únete a la Family List para el acceso anticipado al próximo drop y explora el archivo de piezas agotadas."
+    />
+    <meta property="og:url" content="https://31stfamilyco.com/" />
+    <meta property="og:image" content="https://31stfamilyco.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="Gorras de 31st Family Co con el logotipo de la marca" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="31st Family Co | Más que una marca, somos familia" />
+    <meta
+      name="twitter:description"
+      content="Streetwear nacido en Puerto Rico desde 2024. Únete a la Family List para el acceso anticipado al próximo drop y explora el archivo de piezas agotadas."
+    />
+    <meta name="twitter:image" content="https://31stfamilyco.com/og-image.jpg" />
+
+    <script type="application/ld+json">
+      {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

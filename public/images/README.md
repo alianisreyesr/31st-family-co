@@ -1,48 +1,20 @@
-# Imágenes de 31st Family Co
+# Imágenes
 
-Sube las fotos originales en estas carpetas y con estos nombres. Mantén los nombres en minúsculas, sin espacios y usando guiones.
+Esta carpeta ya no se usa. Las fotos de producto viven en `public/products/` y
+se generan automáticamente.
 
-## Productos
+## Cómo cambiar o añadir una foto
 
-```text
-public/images/products/black-signature-front.jpg
-public/images/products/black-signature-side.jpg
-public/images/products/black-signature-detail.jpg
-public/images/products/green-signature-front.jpg
-public/images/products/green-signature-group.jpg
-public/images/products/green-signature-side.jpg
-public/images/products/terracotta-signature-front.jpg
-public/images/products/terracotta-signature-lifestyle.jpg
-```
+1. Pon el original (JPEG, lo más grande que tengas) en
+   `originals/products/<id-del-producto>/N.jpg`, numerando desde `1`. El `N`
+   decide el orden en la galería, y `1.jpg` es la foto de portada.
+2. Ejecuta `npm run images`.
 
-## Accesorios
+El script genera de cada original tres anchos en WebP más un JPEG de respaldo,
+y escribe `src/data/product-images.js` con las medidas reales de cada archivo
+(que es lo que permite reservar el hueco en el layout y evitar saltos al
+cargar). Los originales se quedan versionados en `originals/`, fuera de
+`public/`, para no publicar nunca una foto sin optimizar.
 
-```text
-public/images/accessories/headband-white.jpg
-public/images/accessories/headband-black.jpg
-```
-
-## Lifestyle y marca
-
-```text
-public/images/lifestyle/hero-31st.jpg
-public/images/lifestyle/roots-family.jpg
-public/images/lifestyle/puerto-rico-drop.jpg
-```
-
-## Regla de uso
-
-- Usa `.jpg` para fotos.
-- Ideal: imagen original de al menos 1600 px de ancho.
-- No cambies el nombre de una imagen luego de que esté conectada en el catálogo.
-- Las fotos verticales funcionan bien para tarjetas; las horizontales para el hero y storytelling.
-
-## Correspondencia con fotos compartidas
-
-- Gorra negra frontal: `products/black-signature-front.jpg`
-- Gorra negra lateral: `products/black-signature-side.jpg`
-- Gorra terracota/café: `products/terracotta-signature-front.jpg`
-- Foto de café/lifestyle: `products/terracotta-signature-lifestyle.jpg`
-- Gorras verdes: `products/green-signature-front.jpg` y `products/green-signature-group.jpg`
-- Headband blanco: `accessories/headband-white.jpg`
-- Headband negro: `accessories/headband-black.jpg`
+Para la foto del hero, la de la sección de historia, la tarjeta de Open Graph y
+los iconos: pon los originales en `originals/site/` y ejecuta `npm run brand`.

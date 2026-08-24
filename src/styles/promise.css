@@ -1,0 +1,48 @@
+/* «La promesa 31st»: tres afirmaciones de marca, sin cifras que sostener. */
+.promise {
+  display: grid;
+  grid-template-columns: auto repeat(3, 1fr);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: start;
+  padding: clamp(48px, 6vw, 76px) clamp(20px, 5vw, 76px);
+  background: var(--black);
+  color: var(--cream);
+}
+
+.promise > .eyebrow {
+  margin: 0;
+  color: var(--muted-footer);
+}
+
+.promise ul {
+  display: contents;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.promise li {
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  padding-top: 16px;
+}
+
+.promise span {
+  font: 500 var(--size-micro) / 1 var(--font-mono);
+  color: var(--muted-footer);
+}
+
+.promise p {
+  margin: 12px 0 0;
+  font-size: clamp(17px, 1.7vw, 21px);
+  letter-spacing: -0.03em;
+}
+
+@media (max-width: 860px) {
+  .promise {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .promise > .eyebrow {
+    grid-column: 1 / -1;
+  }
+}
