@@ -1,0 +1,57 @@
+/* Cabecera fija: en una página larga, el CTA y la navegación desaparecían para
+ * quien iba bajando. `backdrop-filter` mantiene legible el logotipo cuando
+ * pasa por encima de las secciones oscuras. */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding: 0 clamp(20px, 5vw, 76px);
+  background: color-mix(in srgb, var(--cream) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s var(--ease);
+}
+
+.logo,
+.footer-logo {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.09em;
+  line-height: 0.8;
+}
+
+.logo span,
+.footer-logo span {
+  display: block;
+  margin: 7px 0 0 2px;
+  font: 500 var(--size-micro) / 1 var(--font-mono);
+  letter-spacing: 0.2em;
+}
+
+.nav {
+  display: flex;
+  gap: clamp(18px, 2.8vw, 42px);
+  font-size: var(--size-micro);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.nav a:hover,
+.footer-links a:hover {
+  opacity: 0.55;
+}
+
+.menu-button {
+  display: none;
+  padding: 10px 4px;
+  border: 0;
+  background: transparent;
+  font: 500 var(--size-micro) / 1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

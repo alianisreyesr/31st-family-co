@@ -1,0 +1,43 @@
+:root {
+  /* Paleta.
+   * --clay se oscureció de #a16548 a #8f5539: con el texto blanco encima, el
+   * original daba 4.68:1, justo en el filo de AA y por debajo del mínimo en los
+   * textos pequeños de la sección de suscripción. Ahora da ~5.9:1. */
+  --black: #121210;
+  --ink: #20201c;
+  --cream: #f2eee5;
+  --sand: #d8d0c1;
+  --clay: #8f5539;
+  --white: #fffdf8;
+
+  /* Grises de texto secundario, todos verificados sobre su fondo real. */
+  --muted: #56514a; /* sobre --sand-ish #ddd5c8 → 5.4:1 */
+  --muted-cream: #625c52; /* sobre --cream → 5.6:1 */
+  --muted-dark: #cfc7ba; /* sobre --black → 9.9:1 */
+  --muted-footer: #a8a29a; /* sobre #0e0e0d → 7.6:1 */
+
+  --line: rgba(18, 18, 16, 0.18);
+  --line-strong: rgba(18, 18, 16, 0.34);
+  --line-light: rgba(255, 255, 255, 0.28);
+
+  --font-sans: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Escala de texto de apoyo. El diseño original bajaba a 9px, ilegible en
+   * pantalla y por debajo de cualquier mínimo razonable. El piso ahora es 11px. */
+  --size-micro: 11px;
+  --size-meta: 12px;
+  --size-body-sm: 14px;
+  --size-body: 16px;
+
+  --header-height: 78px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--cream);
+  font-synthesis: none;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light;
+}

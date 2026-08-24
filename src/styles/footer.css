@@ -1,0 +1,33 @@
+.footer {
+  padding: 62px clamp(20px, 5vw, 76px) 28px;
+  background: #0e0e0d;
+  color: var(--cream);
+}
+
+.footer > p {
+  margin: 24px 0 50px;
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 500;
+  color: #b5aea3;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-bottom: 50px;
+}
+
+.footer-links a {
+  font-size: var(--size-micro);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footer small {
+  /* Subido de 9px y aclarado: el gris original daba ~4.3:1 a 9px, ilegible. */
+  font: 400 var(--size-meta) / 1.5 var(--font-mono);
+  color: var(--muted-footer);
+}

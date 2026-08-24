@@ -1,0 +1,14 @@
+# Despliegue en Netlify. Las cabeceras van en `public/_headers`, que Netlify lee
+# desde la raíz del directorio publicado.
+
+[build]
+  command = "npm run build:ssg"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Cada ruta ya existe como HTML prerenderizado (dist/privacidad/index.html, etc.),
+# así que no hace falta un fallback de SPA: Netlify sirve el índice del directorio
+# y usa dist/404.html para lo que no exista. Un `/* -> /index.html 200` aquí
+# rompería precisamente eso, devolviendo la portada en vez del 404.
