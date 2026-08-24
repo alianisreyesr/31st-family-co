@@ -163,3 +163,29 @@
 .gallery-thumb .product-image {
   height: 90px;
 }
+
+/* --- Tallas ---------------------------------------------------------------- */
+
+.modal-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.modal-sizes li {
+  min-width: 44px;
+  padding: 9px 12px;
+  border: 1px solid var(--line-strong);
+  font: 500 var(--size-meta) / 1 var(--font-mono);
+  text-align: center;
+}
+
+.modal-sizes-note {
+  margin: 12px 0 0;
+  font-size: var(--size-meta);
+  line-height: 1.5;
+  color: var(--muted-cream);
+}

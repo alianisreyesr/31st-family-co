@@ -47,7 +47,7 @@ export const faqs = [
     id: 'tallas',
     question: '¿Qué talla me sirve?',
     answer:
-      'Nuestras gorras son talla única ajustable. Como las ventas son finales, si dudas entre dos tallas en camisas o no estás seguro del ajuste, escríbenos antes de ordenar: preferimos resolverlo por mensaje que dejarte con una pieza que no te sirve.',
+      'Las gorras son talla única ajustable. Las camisas van de XS a XL. Como las ventas son finales, si dudas entre dos tallas escríbenos antes de ordenar: preferimos resolverlo por mensaje que dejarte con una pieza que no te sirve.',
   },
   {
     id: 'cuidado',

@@ -168,3 +168,61 @@
 .product-button span {
   font-size: 15px;
 }
+
+/* --- Filtro por categoría -------------------------------------------------- */
+
+.category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 34px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.category-filter > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-size: var(--size-micro);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    background 0.15s var(--ease),
+    color 0.15s var(--ease),
+    border-color 0.15s var(--ease);
+}
+
+.filter-chip span {
+  margin-left: 5px;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+.filter-chip:hover {
+  border-color: var(--line-strong);
+}
+
+.filter-chip-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--cream);
+}
+
+.filter-status {
+  margin: 0;
+  font: 500 var(--size-meta) / 1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-cream);
+}

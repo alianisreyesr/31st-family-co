@@ -1,14 +1,31 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { ProductCard } from './ProductCard.jsx'
 import { ProductModal } from './ProductModal.jsx'
 import { OrderButton } from './OrderButton.jsx'
+import { CategoryFilter } from './CategoryFilter.jsx'
 import { products } from '../data/products.js'
 import { resolveOrderLink } from '../lib/commerce.js'
 import { events } from '../lib/analytics.js'
 
 export function DropSection() {
   const [selected, setSelected] = useState(null)
+  const [category, setCategory] = useState('todo')
   const close = useCallback(() => setSelected(null), [])
+
+  // Se calcula una vez: el catálogo es estático dentro de una sesión.
+  const counts = useMemo(
+    () =>
+      products.reduce((acc, product) => {
+        acc[product.category] = (acc[product.category] ?? 0) + 1
+        return acc
+      }, {}),
+    []
+  )
+
+  const visibles = useMemo(
+    () => (category === 'todo' ? products : products.filter((p) => p.category === category)),
+    [category]
+  )
 
   const { kind } = resolveOrderLink()
   const orderHint = {
@@ -30,8 +47,16 @@ export function DropSection() {
         </p>
       </div>
 
+      <CategoryFilter
+        counts={counts}
+        active={category}
+        onChange={setCategory}
+        total={products.length}
+        shown={visibles.length}
+      />
+
       <div className="product-grid">
-        {products.map((product, index) => (
+        {visibles.map((product, index) => (
           <ProductCard
             key={product.id}
             product={product}

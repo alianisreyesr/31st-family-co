@@ -111,6 +111,65 @@ describe('ficha de producto', () => {
   })
 })
 
+describe('filtro por categoría', () => {
+  it('reduce la rejilla a la categoría elegida y lo anuncia', async () => {
+    const user = userEvent.setup()
+    renderApp()
+
+    const gorras = products.filter((p) => p.category === 'gorras').length
+    expect(screen.getAllByRole('button', { name: /ver detalles de/i })).toHaveLength(
+      products.length
+    )
+
+    await user.click(screen.getByRole('button', { name: /^gorras/i }))
+
+    expect(screen.getAllByRole('button', { name: /ver detalles de/i })).toHaveLength(gorras)
+    expect(screen.getByRole('button', { name: /^gorras/i })).toHaveAttribute('aria-pressed', 'true')
+    expect(
+      screen.getByText(new RegExp(`${gorras} de ${products.length} piezas`))
+    ).toBeInTheDocument()
+  })
+
+  it('vuelve al catálogo completo con «Todo»', async () => {
+    const user = userEvent.setup()
+    renderApp()
+
+    await user.click(screen.getByRole('button', { name: /^medias/i }))
+    expect(screen.getAllByRole('button', { name: /ver detalles de/i })).toHaveLength(1)
+
+    await user.click(screen.getByRole('button', { name: /^todo/i }))
+    expect(screen.getAllByRole('button', { name: /ver detalles de/i })).toHaveLength(
+      products.length
+    )
+  })
+})
+
+describe('tallas', () => {
+  it('muestra las tallas reales de la camisa en su ficha', async () => {
+    const user = userEvent.setup()
+    renderApp()
+
+    await user.click(screen.getByRole('button', { name: /ver detalles de essential tees/i }))
+    const dialog = screen.getByRole('dialog')
+
+    for (const talla of ['XS', 'S', 'M', 'L', 'XL']) {
+      expect(within(dialog).getByText(talla, { selector: 'li' })).toBeInTheDocument()
+    }
+    expect(within(dialog).getByText(/ventas son finales/i)).toBeInTheDocument()
+  })
+
+  it('no inventa tallas en una gorra', async () => {
+    const user = userEvent.setup()
+    renderApp()
+
+    await user.click(screen.getByRole('button', { name: /ver detalles de 4\/31 love god/i }))
+    const dialog = screen.getByRole('dialog')
+
+    expect(within(dialog).queryByText('XL', { selector: 'li' })).not.toBeInTheDocument()
+    expect(within(dialog).getByText(/talla única ajustable/i)).toBeInTheDocument()
+  })
+})
+
 describe('menú móvil', () => {
   it('refleja su estado en aria-expanded y cierra con Escape', async () => {
     const user = userEvent.setup()

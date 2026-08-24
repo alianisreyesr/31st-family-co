@@ -19,6 +19,11 @@
  * sitio está en español. No se añaden materiales ni medidas que su ficha no
  * mencione.
  *
+ * `sizes` lista las tallas reales cuando la pieza las tiene (las camisas van de
+ * XS a XL) y queda en null cuando es talla única o no se han confirmado. No se
+ * rellena por analogía: una talla mal publicada, con ventas finales, es una
+ * pieza que alguien no puede devolver.
+ *
  * ⚠️ Sin confirmar: a qué colección (Día UNO / Serie DOS) pertenece cada pieza.
  * El listado por colección de su sitio se renderiza por API y no viene en el
  * HTML, así que `collection` queda en null en vez de adivinarlo.
@@ -49,6 +54,7 @@ export const products = [
       'Diseñada para uso diario',
       'Cierre ajustable',
     ],
+    sizes: null,
     fit: 'Talla única ajustable',
     checkoutUrl: `${TIENDA}/a-new-beginning`,
   },
@@ -71,6 +77,7 @@ export const products = [
       'Frase «a new beginning»',
       'Cierre ajustable',
     ],
+    sizes: null,
     fit: 'Talla única ajustable',
     checkoutUrl: `${TIENDA}/31stfamilyco-reverse`,
   },
@@ -93,6 +100,7 @@ export const products = [
       'Estilo streetwear',
       'Cierre ajustable',
     ],
+    sizes: null,
     fit: 'Talla única ajustable',
     checkoutUrl: `${TIENDA}/31stfamlyco-puerto-rico-cap`,
   },
@@ -110,6 +118,7 @@ export const products = [
     summary:
       'Marrón con el lettering bordado en grande. Algodón transpirable y ajustable, pensada para el día a día.',
     details: ['Algodón transpirable', 'Lettering bordado a gran tamaño', 'Ajustable', 'Uso diario'],
+    sizes: null,
     fit: 'Talla única ajustable',
     checkoutUrl: `${TIENDA}/31st-brown-cap-31st-family-co`,
   },
@@ -132,6 +141,7 @@ export const products = [
       'Parches de inspiración de fe',
       'Cierre ajustable',
     ],
+    sizes: null,
     fit: 'Talla única ajustable',
     checkoutUrl: `${TIENDA}/31stfamilyco-love-god`,
   },
@@ -147,10 +157,12 @@ export const products = [
     status: /** @type {ProductStatus} */ ('available'),
     tone: 'sand',
     // La ficha de su tienda no trae descripción para esta pieza. Se deja lo
-    // mínimo verificable en vez de inventar tejido, gramaje o corte.
-    summary: 'Camiseta con bordado de la marca. Consúltanos tallas disponibles antes de ordenar.',
-    details: ['Bordado de la marca'],
-    fit: null,
+    // mínimo verificable en vez de inventar tejido, gramaje o corte; las tallas
+    // sí están confirmadas por la marca.
+    summary: 'Camiseta con bordado de la marca, disponible de XS a XL.',
+    details: ['Bordado de la marca', 'Tallas XS a XL'],
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    fit: 'Tallas XS a XL',
     checkoutUrl: `${TIENDA}/camisa-bordada`,
   },
   {
@@ -167,6 +179,7 @@ export const products = [
     summary:
       'Una fusión de moda y raíces familiares. Desde 2024 llevamos contigo una historia que celebra la conexión y el estilo.',
     details: ['Diseño 31st Family Co', 'Primera versión de la serie'],
+    sizes: null,
     fit: null,
     checkoutUrl: `${TIENDA}/31st-socks-v1-31st-family-co`,
   },
@@ -184,6 +197,7 @@ export const products = [
     summary:
       'Para entrenar duro y con estilo. Su tejido absorbente mantiene el sudor lejos de tu rostro mientras juegas, corres o entrenas.',
     details: ['Tejido absorbente', 'Bordado frontal', 'Para entrenamiento y juego'],
+    sizes: null,
     fit: null,
     checkoutUrl: `${TIENDA}/31st-cinta-deportiva`,
   },

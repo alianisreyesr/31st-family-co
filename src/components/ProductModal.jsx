@@ -64,7 +64,23 @@ export function ProductModal({ product, onClose }) {
             ))}
           </ul>
 
-          {product.fit && (
+          {product.sizes && (
+            <>
+              <h3>Tallas</h3>
+              {/* Lista y no un selector: la compra se cierra en la tienda, así
+                  que aquí solo hay que informar de qué existe. */}
+              <ul className="modal-sizes">
+                {product.sizes.map((talla) => (
+                  <li key={talla}>{talla}</li>
+                ))}
+              </ul>
+              <p className="modal-sizes-note">
+                Las ventas son finales: si dudas entre dos tallas, escríbenos antes de ordenar.
+              </p>
+            </>
+          )}
+
+          {product.fit && !product.sizes && (
             <>
               <h3>Ajuste</h3>
               <p className="modal-fit">{product.fit}</p>

@@ -52,12 +52,32 @@ describe('catálogo', () => {
     }
   })
 
-  it('no inventa medidas donde la ficha original no las da', () => {
-    // Las gorras son talla única ajustable; medias, camisas y cintas no
-    // declaran ajuste en la tienda, así que `fit` debe ser null.
+  it('no inventa medidas donde no hay dato confirmado', () => {
     for (const product of products) {
-      if (product.category === 'gorras') expect(product.fit).toBeTruthy()
-      else expect(product.fit).toBeNull()
+      // Gorras: talla única ajustable, sin lista de tallas.
+      if (product.category === 'gorras') {
+        expect(product.fit).toBeTruthy()
+        expect(product.sizes).toBeNull()
+      }
+      // Medias y head bands: la marca no ha confirmado tallas.
+      if (product.category === 'medias' || product.category === 'head-bands') {
+        expect(product.fit).toBeNull()
+        expect(product.sizes).toBeNull()
+      }
+    }
+  })
+
+  it('publica las tallas reales de las camisas', () => {
+    const camisa = findProduct('camisa-bordada')
+    expect(camisa.sizes).toEqual(['XS', 'S', 'M', 'L', 'XL'])
+    expect(camisa.summary).toMatch(/XS a XL/)
+  })
+
+  it('toda pieza con tallas las declara como lista, no como texto libre', () => {
+    for (const product of products) {
+      if (product.sizes === null) continue
+      expect(Array.isArray(product.sizes)).toBe(true)
+      expect(product.sizes.length).toBeGreaterThan(0)
     }
   })
 
