@@ -1,0 +1,138 @@
+/* Un solo corte, a 860px: por encima el grid de 3-4 columnas respira; por
+ * debajo todo pasa a una columna. Los tamaños intermedios los resuelve
+ * `clamp()` en cada sección, sin más breakpoints. */
+@media (max-width: 1000px) {
+  .modal-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-media .product-image {
+    min-height: 260px;
+    height: 46vw;
+    max-height: 340px;
+  }
+}
+
+@media (max-width: 860px) {
+  :root {
+    --header-height: 64px;
+  }
+
+  .menu-button {
+    display: block;
+  }
+
+  .nav {
+    position: absolute;
+    top: var(--header-height);
+    right: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    padding: 24px 20px 30px;
+    background: var(--cream);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-open {
+    display: flex;
+  }
+
+  .hero {
+    min-height: 640px;
+  }
+
+  .hero::after {
+    top: -8vw;
+    right: -44vw;
+    width: 130vw;
+    height: 130vw;
+  }
+
+  .section-heading,
+  .statement,
+  .signup {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 38px;
+  }
+
+  .product-image {
+    height: 112vw;
+    max-height: 500px;
+  }
+
+  .statement-photo {
+    min-height: 380px;
+  }
+
+  .statement-copy {
+    padding: 72px 20px;
+  }
+
+  .values-grid {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 42px;
+  }
+
+  .values-grid > li {
+    min-height: 185px;
+    padding: 0 14px 25px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .values-grid > li:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .values-grid h3 {
+    margin-top: 34px;
+  }
+
+  .signup {
+    padding-bottom: 80px;
+  }
+
+  .footer-links {
+    gap: 16px 20px;
+  }
+
+  .scroll-cue {
+    bottom: 22px;
+  }
+
+  /* La barra fija de compra solo tiene sentido en móvil: en escritorio la
+   * cabecera fija ya mantiene la navegación a la vista. */
+  .sticky-buy {
+    display: flex;
+  }
+
+  /* Hueco para que la barra fija no tape el final de la página. */
+  .footer {
+    padding-bottom: 96px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-actions {
+    gap: 20px;
+  }
+
+  .product-actions {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .modal-actions {
+    gap: 16px;
+  }
+}

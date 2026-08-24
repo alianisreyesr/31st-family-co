@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# `npm run build:ssg` reescribe este archivo anadiendo la linea Sitemap
+# absoluta a partir de VITE_SITE_URL.
+Sitemap: /sitemap.xml

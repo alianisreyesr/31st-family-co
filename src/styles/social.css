@@ -1,0 +1,38 @@
+.social-proof {
+  background: var(--cream);
+  border-top: 1px solid var(--line);
+}
+
+.testimonials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin: 0 0 48px;
+  padding: 0;
+  list-style: none;
+}
+
+.testimonials > li {
+  padding: 28px;
+  border: 1px solid var(--line);
+}
+
+.testimonials blockquote {
+  margin: 0;
+}
+
+.testimonials blockquote p {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.testimonial-author {
+  margin: 20px 0 0;
+  font: 500 var(--size-micro) / 1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-cream);
+}

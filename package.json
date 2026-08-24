@@ -6,13 +6,36 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "build:ssg": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-server && node scripts/prerender.mjs",
+    "preview": "vite preview",
+    "images": "node scripts/optimize-images.mjs",
+    "brand": "node scripts/build-brand-assets.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{js,jsx,mjs,css,json,md,html}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,mjs,css,json,md,html}\"",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-router-dom": "7.18.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.6",
+    "@vitejs/plugin-react": "6.1.0",
+    "eslint": "9.39.5",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.11.0",
+    "jsdom": "29.1.1",
+    "prettier": "3.9.6",
+    "sharp": "0.35.3",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
+  }
 }

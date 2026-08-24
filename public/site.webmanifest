@@ -1,0 +1,20 @@
+{
+  "name": "31st Family Co",
+  "short_name": "31st Family",
+  "description": "Gorras premium hechas en Puerto Rico. Mas que una marca, somos familia.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2eee5",
+  "theme_color": "#121210",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "64x64", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    {
+      "src": "/brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

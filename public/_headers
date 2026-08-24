@@ -1,0 +1,32 @@
+# Cabeceras para hosts estáticos que leen este archivo (Netlify, Cloudflare Pages).
+# Para Vercel, lo mismo está en vercel.json.
+
+# Los assets que Vite emite llevan hash en el nombre: cambiar el contenido cambia
+# la URL, así que se pueden cachear para siempre sin riesgo de servir algo viejo.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Las fotos no llevan hash, pero solo cambian cuando cambia el catálogo. Un mes
+# de caché con revalidación evita volver a bajar 20 kB por tarjeta en cada visita.
+/products/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/brand/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+# El HTML se revalida siempre: es lo que permite publicar un cambio de precio o
+# de política y que se vea al instante.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Cabeceras de seguridad. No hay CSP: el sitio carga fuentes de Google y, si se
+# configura, el script de Plausible; una CSP mal ajustada rompería ambos en
+# silencio. Conviene añadirla cuando las fuentes se auto-hospeden.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
