@@ -18,6 +18,11 @@ const env = import.meta.env ?? {}
 // defecto para que el sitio nunca muestre un contacto inventado; cualquiera se
 // puede sobrescribir por entorno.
 const PUBLICADO = {
+  // Su tienda ya tiene carrito y checkout funcionando, así que es mejor destino
+  // por defecto que WhatsApp: sin esto, los botones de pieza iban al checkout
+  // real pero el de la colección caía a WhatsApp, y el aviso bajo el botón
+  // contradecía a los demás.
+  tienda: 'https://31stfamilyco.com/tienda-31st-family-co',
   email: '31stfamilyco@gmail.com',
   telefono: '17874648291',
   instagram: 'https://www.instagram.com/31stfamilyco/',
@@ -25,10 +30,34 @@ const PUBLICADO = {
   tiktok: 'https://www.tiktok.com/@31stfamilyco',
 }
 
+const DOMINIO_PRODUCCION = '31stfamilyco.com'
+
+const siteUrl = text(env.VITE_SITE_URL, `https://${DOMINIO_PRODUCCION}`).replace(/\/+$/, '')
+
+/**
+ * ¿Es este despliegue una vista previa?
+ *
+ * Importa porque una copia del sitio en `*.netlify.app` o `*.vercel.app` que
+ * Google indexe compite como contenido duplicado contra el sitio real de la
+ * marca. Cuando es vista previa se emite `noindex` y un robots.txt que lo
+ * bloquea todo.
+ *
+ * `VITE_NOINDEX` manda si está puesto; si no, se deduce del dominio, que es
+ * más difícil de olvidar que acordarse de una variable.
+ */
+const noindexExplicito = text(env.VITE_NOINDEX).toLowerCase()
+const esVistaPrevia =
+  noindexExplicito === 'true' || noindexExplicito === '1'
+    ? true
+    : noindexExplicito === 'false' || noindexExplicito === '0'
+      ? false
+      : !siteUrl.endsWith(`//${DOMINIO_PRODUCCION}`) && !siteUrl.endsWith(`.${DOMINIO_PRODUCCION}`)
+
 export const config = {
-  siteUrl: text(env.VITE_SITE_URL, 'https://31stfamilyco.com').replace(/\/+$/, ''),
+  siteUrl,
+  isPreview: esVistaPrevia,
   newsletterEndpoint: text(env.VITE_NEWSLETTER_ENDPOINT),
-  checkoutUrl: text(env.VITE_CHECKOUT_URL),
+  checkoutUrl: text(env.VITE_CHECKOUT_URL, PUBLICADO.tienda),
   // El sitio actual ya atiende por una burbuja de WhatsApp, así que el número
   // publicado es un canal de pedido real, no un placeholder.
   whatsappNumber: text(env.VITE_WHATSAPP_NUMBER, PUBLICADO.telefono).replace(/\D/g, ''),

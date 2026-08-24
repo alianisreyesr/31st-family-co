@@ -117,35 +117,24 @@ ejecuta `npm run images`.
 
 ## Pendiente antes de publicar
 
-1. **Revisar los textos legales.** `src/pages/Privacy.jsx` y
-   `src/pages/Terms.jsx` son borradores. Los `[CORCHETES]` (nombre legal,
-   dirección, proveedores) son obligatorios de rellenar. Las secciones de
-   envíos, devoluciones y garantía ya reproducen la política real publicada:
-   **todas las ventas son finales salvo defecto de manufactura, con 7 días para
-   reportarlo.** `src/data/policies.test.js` falla el build si alguien vuelve a
-   colar una promesa de 30 días.
-2. **Envío gratis desde $75: confirmado como irreal.** Se retiró de la barra de
-   anuncio, del FAQ y de la franja de confianza. No lo devuelvas sin una
-   política publicada que lo respalde.
-3. **A qué colección pertenece cada pieza.** «Día UNO» y «Serie DOS» existen en
-   su tienda, pero el listado por colección se sirve por API y no está en el
-   HTML, así que `collection` quedó en `null` en vez de adivinarlo.
-4. **Tallas de `Essential Tees`.** Su propia ficha no trae descripción ni
-   tallas; el sitio dice «consúltanos antes de ordenar». Conviene publicarlas.
-5. **Correo del dominio.** Hoy el contacto es una cuenta de Gmail. Un
-   `hola@31stfamilyco.com` cuesta poco y suma credibilidad en una marca que
-   vende.
-6. **Testimonios.** `src/data/testimonials.js` está vacío a propósito y la
-   sección se oculta sola. Rellénalo solo con mensajes reales y con permiso.
-7. **Poner las UTM** en el link de la bio de Instagram para poder medir de dónde
-   viene el tráfico.
+Ver **[PENDIENTE.md](PENDIENTE.md)**: qué falta, quién lo tiene que aportar y la
+lista de comprobación para probar el sitio antes de enseñarlo.
 
 ## Despliegue
 
 `npm run build:ssg` deja en `dist/` un sitio estático servible en Netlify,
-Vercel, Cloudflare Pages o GitHub Pages. Incluye `404.html`, `sitemap.xml` y
-`robots.txt`. Como hay rutas de cliente, configura el fallback a `index.html`
-para las rutas no prerenderizadas.
+Vercel o Cloudflare Pages. Incluye `404.html`, `sitemap.xml`, `robots.txt` y las
+cabeceras de caché. Cada ruta existe como HTML prerenderizado, así que no hace
+falta fallback de SPA.
+
+**`VITE_SITE_URL` decide si el despliegue es indexable.** Si no apunta a
+`31stfamilyco.com`, el build lo trata como vista previa y emite `noindex` más un
+`robots.txt` que lo bloquea todo, para que una copia en `*.netlify.app` no
+compite como contenido duplicado contra el sitio real. El build imprime en qué
+modo salió; conviene mirarlo. `VITE_NOINDEX=true|false` lo fuerza.
+
+Los pasos concretos para publicar la vista previa del cliente y para pasarla
+luego a producción están en [PENDIENTE.md](PENDIENTE.md).
 
 El workflow de [CI](.github/workflows/ci.yml) ejecuta lint, formato, tests y
 build en cada push y pull request.

@@ -54,6 +54,7 @@ function buildPage(meta) {
   let html = template
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeText(meta.title)}</title>`)
   html = setMeta(html, 'name="description"', meta.description)
+  html = setMeta(html, 'name="robots"', config.isPreview ? 'noindex, nofollow' : 'index, follow')
   html = setMeta(html, 'property="og:title"', meta.title)
   html = setMeta(html, 'property="og:description"', meta.description)
   html = setMeta(html, 'property="og:url"', url)
@@ -115,7 +116,9 @@ ${pages
 writeFileSync(resolve(DIST, 'sitemap.xml'), sitemap)
 writeFileSync(
   resolve(DIST, 'robots.txt'),
-  `User-agent: *\nAllow: /\n\nSitemap: ${config.siteUrl}/sitemap.xml\n`
+  config.isPreview
+    ? `# Vista previa: no indexar.\nUser-agent: *\nDisallow: /\n`
+    : `User-agent: *\nAllow: /\n\nSitemap: ${config.siteUrl}/sitemap.xml\n`
 )
 console.log('  sitemap.xml\n  robots.txt')
 
@@ -123,3 +126,8 @@ console.log('  sitemap.xml\n  robots.txt')
 rmSync(resolve(ROOT, 'dist-server'), { recursive: true, force: true })
 
 console.log(`\nListo. Sitio estático en dist/ apuntando a ${config.siteUrl}`)
+console.log(
+  config.isPreview
+    ? 'Modo VISTA PREVIA: noindex + robots.txt bloqueado. No competirá con el sitio real.'
+    : 'Modo PRODUCCIÓN: indexable. Comprueba que esta URL es la definitiva.'
+)

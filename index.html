@@ -23,6 +23,13 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href="https://31stfamilyco.com/" />
 
+    <!--
+      `npm run build:ssg` cambia esto a `noindex, nofollow` cuando el despliegue
+      no es el dominio de producción: una vista previa indexada competiría como
+      contenido duplicado contra el sitio real de la marca.
+    -->
+    <meta name="robots" content="index, follow" />
+
     <title>31st Family Co | Más que una marca, somos familia</title>
     <meta
       name="description"

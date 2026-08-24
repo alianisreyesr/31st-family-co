@@ -34,6 +34,18 @@ describe('portada', () => {
     }
   })
 
+  it('manda todos los botones de compra al mismo tipo de destino', () => {
+    renderApp()
+    // Antes los botones de pieza iban al checkout real y el de la colección a
+    // WhatsApp, con un aviso debajo que contradecía a los otros.
+    const compra = screen.getAllByRole('link', { name: /comprar/i })
+    expect(compra.length).toBeGreaterThan(products.length)
+    for (const link of compra) {
+      expect(link.getAttribute('href')).toMatch(/^https:\/\/31stfamilyco\.com\//)
+    }
+    expect(screen.queryByText(/se cierran por whatsapp/i)).not.toBeInTheDocument()
+  })
+
   it('muestra el precio formateado, no una cadena suelta', () => {
     renderApp()
     // El catálogo real: gorras a $40, camiseta $35, medias $15, cinta $12.
