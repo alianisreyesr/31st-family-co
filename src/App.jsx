@@ -19,16 +19,15 @@ function ProductImage({ product }) {
   return <img src={product.image} alt={product.imageAlt} loading="lazy" onError={() => setImageFailed(true)} />
 }
 
-function ProductCard({ product, onRestock }) {
-  const isAvailable = product.status === 'available'
+function ProductCard({ product, onWaitlist }) {
+  const upcoming = product.status === 'upcoming'
+  const statusText = upcoming ? 'Próximamente' : 'Agotado'
 
   return (
     <article className="product-card">
       <div className="product-media">
         <ProductImage product={product} />
-        <span className={isAvailable ? 'status-badge available' : 'status-badge'}>
-          {isAvailable ? 'Disponible' : 'Agotado'}
-        </span>
+        <span className={upcoming ? 'status-badge upcoming' : 'status-badge'}>{statusText}</span>
       </div>
       <div className="product-info">
         <div>
@@ -36,13 +35,11 @@ function ProductCard({ product, onRestock }) {
           <h3>{product.name}</h3>
           <p className="product-color">{product.color}</p>
         </div>
-        <strong>{formatPrice(product.price)}</strong>
+        <strong>{upcoming ? 'Próximo drop' : formatPrice(product.price)}</strong>
       </div>
-      {isAvailable ? (
-        <button className="product-action" type="button" onClick={() => window.alert('El checkout se conectará con Stripe en la próxima fase.')}>Añadir al carrito <span>→</span></button>
-      ) : (
-        <button className="product-action" type="button" onClick={() => onRestock(product.name)}>Avísame del restock <span>→</span></button>
-      )}
+      <button className="product-action" type="button" onClick={() => onWaitlist(product.name)}>
+        {upcoming ? 'Quiero acceso' : 'Avísame del restock'} <span>→</span>
+      </button>
     </article>
   )
 }
@@ -53,7 +50,7 @@ function App() {
   const [email, setEmail] = useState('')
   const [notice, setNotice] = useState('')
 
-  const featuredProducts = products.filter((product) => product.status === 'available')
+  const upcomingProducts = products.filter((product) => product.status === 'upcoming')
   const archivedProducts = useMemo(
     () => products.filter((product) => product.status === 'sold-out' && (activeCategory === 'Todos' || product.category === activeCategory)),
     [activeCategory],
@@ -66,8 +63,8 @@ function App() {
     setEmail('')
   }
 
-  const requestRestock = (productName) => {
-    setNotice(`Te avisaremos cuando ${productName} vuelva a estar disponible.`)
+  const joinWaitlist = (productName) => {
+    setNotice(`Te avisaremos primero cuando ${productName} esté disponible.`)
     document.querySelector('#familia')?.scrollIntoView({ behavior: 'smooth' })
   }
 
@@ -79,11 +76,10 @@ function App() {
         <a className="logo" href="#inicio" aria-label="31st Family Co, inicio">31ST<span>FAMILY CO.</span></a>
         <button className="menu-button" type="button" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Cerrar' : 'Menú'}</button>
         <nav className={menuOpen ? 'nav nav-open' : 'nav'} aria-label="Navegación principal">
-          <a href="#shop" onClick={() => setMenuOpen(false)}>Comprar</a>
+          <a href="#proximo-drop" onClick={() => setMenuOpen(false)}>Próximo drop</a>
           <a href="#archivo" onClick={() => setMenuOpen(false)}>Archivo</a>
           <a href="#historia" onClick={() => setMenuOpen(false)}>Historia</a>
           <a href={instagramUrl} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Instagram</a>
-          <a className="nav-cart" href="#shop" onClick={() => setMenuOpen(false)}>Bolsa (0)</a>
         </nav>
       </header>
 
@@ -95,25 +91,25 @@ function App() {
             <h1>Más que una marca.<br /><em>Somos familia.</em></h1>
             <p className="hero-copy">Streetwear nacido en Puerto Rico, creado desde nuestras raíces para quienes no vinieron a encajar.</p>
             <div className="hero-actions">
-              <a className="button button-light" href="#shop">Comprar HeadBands</a>
+              <a className="button button-light" href="#familia">Únete al próximo drop</a>
               <a className="text-link" href="#archivo">Explorar el archivo <span>→</span></a>
             </div>
           </div>
           <div className="hero-stamp"><span>EST.</span><strong>2024</strong><span>FAMILY CO.</span></div>
         </section>
 
-        <section className="shop section" id="shop">
+        <section className="shop section" id="proximo-drop">
           <div className="section-heading">
             <div>
-              <p className="eyebrow dark">Disponible ahora</p>
-              <h2>Everyday essentials.</h2>
+              <p className="eyebrow dark">Próximamente</p>
+              <h2>El próximo capítulo.</h2>
             </div>
-            <p>Las piezas disponibles ahora. Diseñadas para acompañar cada día y representar la familia donde vayas.</p>
+            <p>Estas piezas formarán parte del próximo lanzamiento. Únete a la lista para recibir acceso temprano antes de que se anuncie al público.</p>
           </div>
           <div className="product-grid featured-grid">
-            {featuredProducts.map((product) => <ProductCard product={product} key={product.id} onRestock={requestRestock} />)}
+            {upcomingProducts.map((product) => <ProductCard product={product} key={product.id} onWaitlist={joinWaitlist} />)}
           </div>
-          <p className="availability-note">Inventario limitado. El estado final de disponibilidad se confirmará al conectar el sistema de inventario.</p>
+          <div className="center-action"><a className="button button-dark" href="#familia">Quiero acceso anticipado</a></div>
         </section>
 
         <section className="statement" id="historia">
@@ -141,7 +137,7 @@ function App() {
             ))}
           </div>
           <div className="product-grid archive-grid">
-            {archivedProducts.map((product) => <ProductCard product={product} key={product.id} onRestock={requestRestock} />)}
+            {archivedProducts.map((product) => <ProductCard product={product} key={product.id} onWaitlist={joinWaitlist} />)}
           </div>
         </section>
 
@@ -158,7 +154,7 @@ function App() {
             <h2>El próximo drop<br />empieza aquí.</h2>
           </div>
           <div className="signup-content">
-            <p>Únete a la Family List para recibir restocks, acceso temprano y noticias directamente de 31st Family Co.</p>
+            <p>Únete a la Family List para recibir acceso temprano, restocks y noticias directamente de 31st Family Co.</p>
             <form onSubmit={submitEmail}>
               <label className="sr-only" htmlFor="email">Tu email</label>
               <input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Tu email" required />
@@ -174,7 +170,7 @@ function App() {
         <div className="footer-top">
           <div><div className="footer-logo">31ST<span>FAMILY CO.</span></div><p>Born in Puerto Rico.<br />Built to stand out.</p></div>
           <div className="footer-links">
-            <a href="#shop">Comprar</a>
+            <a href="#proximo-drop">Próximo drop</a>
             <a href="#archivo">Archivo</a>
             <a href={instagramUrl} target="_blank" rel="noreferrer">Instagram</a>
             <a href="https://www.tiktok.com/@31stfamilyco" target="_blank" rel="noreferrer">TikTok</a>
