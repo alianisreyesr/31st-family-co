@@ -1,8 +1,8 @@
 # 31st Family Co
 
 Sitio de 31st Family Co en React + Vite: lista de espera del próximo drop,
-archivo de piezas agotadas, prerender estático, captura de emails, analítica
-opcional y páginas legales.
+archivo de piezas agotadas, una página por pieza, prerender estático, captura de
+emails, analítica opcional y páginas legales.
 
 El inventario está agotado salvo el próximo drop, así que la conversión es entrar
 en la Family List, no comprar. Ver [PENDIENTE.md](PENDIENTE.md).
@@ -24,17 +24,18 @@ Vite mostrará una URL local, normalmente `http://localhost:5173`.
 
 ## Scripts
 
-| Script              | Qué hace                                                              |
-| ------------------- | --------------------------------------------------------------------- |
-| `npm run dev`       | Servidor de desarrollo con recarga en caliente.                       |
-| `npm run build`     | Build de cliente en `dist/` (SPA, sin prerender).                     |
-| `npm run build:ssg` | **Build de producción**: prerenderiza cada ruta + sitemap + robots.   |
-| `npm run preview`   | Sirve `dist/` para revisar el build.                                  |
-| `npm run images`    | Regenera las fotos de producto (WebP responsive) desde `originals/`.  |
-| `npm run brand`     | Regenera hero, historia, tarjeta OG e iconos desde `originals/site/`. |
-| `npm run lint`      | ESLint, con reglas de React Hooks y accesibilidad (jsx-a11y).         |
-| `npm run format`    | Prettier sobre todo el repo.                                          |
-| `npm test`          | Vitest: lógica, interfaz e hidratación.                               |
+| Script              | Qué hace                                                             |
+| ------------------- | -------------------------------------------------------------------- |
+| `npm run dev`       | Servidor de desarrollo con recarga en caliente.                      |
+| `npm run build`     | Build de cliente en `dist/` (SPA, sin prerender).                    |
+| `npm run build:ssg` | **Build de producción**: prerenderiza cada ruta + sitemap + robots.  |
+| `npm run preview`   | Sirve `dist/` como lo haría el host: sin fallback de SPA y con 404.  |
+| `npm run images`    | Regenera las fotos de producto (WebP responsive) desde `originals/`. |
+| `npm run brand`     | Regenera hero, historia, tarjeta OG, iconos y logotipo.              |
+| `npm run fonts`     | Descarga las fuentes a `public/fonts/` y genera `fonts.css`.         |
+| `npm run lint`      | ESLint, con reglas de React Hooks y accesibilidad (jsx-a11y).        |
+| `npm run format`    | Prettier sobre todo el repo.                                         |
+| `npm test`          | Vitest: lógica, interfaz e hidratación.                              |
 
 Para publicar usa **`npm run build:ssg`**, no `npm run build`: es el que escribe
 el HTML que leen Google y los previews de WhatsApp e Instagram.
@@ -117,6 +118,28 @@ lo que costó, para el JSON-LD y para cuando vuelva el stock.
 `stock`. La tarjeta cambia sola de «Avísame del restock» a un botón de compra
 que resuelve un destino real (checkout propio → tienda → WhatsApp → DM).
 
+### Rutas
+
+| Ruta            | Qué es                                                     |
+| --------------- | ---------------------------------------------------------- |
+| `/`             | Portada: próximo drop, historia, archivo, preguntas, alta. |
+| `/producto/:id` | Una página por pieza. El `id` del catálogo es el slug.     |
+| `/privacidad`   | Política de privacidad.                                    |
+| `/terminos`     | Términos y condiciones.                                    |
+
+Las **páginas de producto** ([`src/pages/Product.jsx`](src/pages/Product.jsx))
+existen para que una pieza tenga una dirección que compartir e indexar: antes el
+sitio entero se resumía en tres URLs y una gorra concreta no se podía enlazar.
+Cada una se prerenderiza con su título, su descripción, **su propia foto como
+tarjeta social** y datos estructurados `Product` + `BreadcrumbList`.
+
+La ficha en modal de la portada se queda como vista rápida —no pierdes el sitio
+en la parrilla ni el filtro— y enlaza a la página permanente.
+
+⚠️ El `id` de una pieza en `src/data/products.js` es su URL pública. Cambiarlo
+rompe los enlaces ya compartidos y lo que Google tenga indexado: es un
+renombrado, no una edición cosmética.
+
 ### Fotografía
 
 Los originales descargados de la tienda viven en `originals/` (versionados,
@@ -127,6 +150,77 @@ hero, la de la sección de historia, la tarjeta de Open Graph y los iconos.
 
 Para cambiar una foto: sustituye el archivo en `originals/products/<id>/N.jpg` y
 ejecuta `npm run images`.
+
+### El logotipo
+
+La fuente es `originals/site/logo-b.png`: el escudo con «EST. 2024» y «FAMILY
+CO.» en arco. Viene **relleno de un gris muy claro** —rgb(220, 219, 220)— sobre
+transparente, así que tal cual queda a 1,2:1 de contraste sobre el crema del
+sitio, o sea invisible. La silueta buena está en el canal alfa, y de ahí sale
+todo: `npm run brand` la usa como máscara y la rellena de un color plano.
+
+De ahí salen cuatro archivos en `public/brand/`:
+
+| Archivo                     | Dónde se usa                             |
+| --------------------------- | ---------------------------------------- |
+| `logo-wordmark.png`         | Cabecera. El monograma `31ST` en tinta.  |
+| `logo-wordmark-light.png`   | Pie, en crema sobre el negro.            |
+| `logo-badge.png` / `-light` | El escudo entero, para donde haya sitio. |
+
+**El monograma se aísla por componentes conectados**, no recortando: las patas
+del `31ST` bajan hasta el arco de «FAMILY CO.», así que no hay ninguna línea por
+la que cortar. El script etiqueta las formas y conserva las grandes —en el
+escudo actual, 2 de 19— con un umbral relativo al mayor, para que siga
+funcionando si algún día se sustituye el logotipo por otra versión. El build
+imprime cuántos componentes conservó: si ese número cambia, mira el resultado.
+
+A la altura de la cabecera el texto en arco mide cuatro píxeles y solo ensucia;
+por eso ahí va el monograma y el escudo entero se reserva para el icono y la
+tarjeta social.
+
+⚠️ El original es de **500 × 500 px**. Da de sobra para la cabecera y los iconos,
+pero si algún día hace falta el logotipo en grande —serigrafía, cartelería— hará
+falta el vectorial.
+
+## Fuentes y seguridad
+
+### Fuentes auto-hospedadas
+
+`npm run fonts` descarga las caras que usa el sitio a `public/fonts/` y genera
+`src/styles/fonts.css`. Ya no hay ningún `<link>` a Google, por tres razones:
+
+- **Velocidad.** El enlace a `fonts.googleapis.com` obligaba a abrir dos
+  conexiones nuevas (DNS + TLS a googleapis y a gstatic) antes de poder pedir el
+  primer archivo. Ahora viajan por la conexión que ya está abierta.
+- **Privacidad.** Cada visita mandaba la IP y el user-agent a Google sin
+  consentimiento. Eso ya no pasa, y la política de privacidad no tiene que
+  mencionarlo.
+- **Seguridad.** Con las fuentes en casa, `font-src 'self'` basta y la CSP no
+  necesita abrir dominios de terceros.
+
+Solo se guardan los subconjuntos `latin` y `latin-ext`: el sitio está en español
+y los de cirílico, griego y vietnamita no se pedirían nunca. Son 14 archivos,
+236 kB en total, de los que cada visita descarga los cuatro que necesita.
+
+El nombre lleva la versión de la fuente —`manrope-v20-700-latin.woff2`—, así que
+se cachean un año como inmutables: si Google publica una revisión, `npm run
+fonts` la trae con otro nombre y el navegador la pide de nuevo.
+
+⚠️ Al actualizarlas cambian de nombre, y los `preload` de `index.html` hay que
+ajustarlos. Hay una prueba que falla si se olvida.
+
+### Política de seguridad de contenidos
+
+La escribe `npm run build:ssg` en un `<meta>` de cada página, deducida de la
+configuración ([`src/lib/csp.js`](src/lib/csp.js)). Sin servicios conectados no
+abre ningún host de terceros; al poner `VITE_NEWSLETTER_ENDPOINT` o
+`VITE_PLAUSIBLE_DOMAIN`, abre exactamente ese origen y nada más. El build la
+imprime al terminar.
+
+Va en `<meta>` y no en una cabecera para que viaje con el HTML y valga igual en
+Netlify, en Vercel o arrastrando `dist/` a cualquier sitio. La única directiva
+que se pierde es `frame-ancestors`, que no se admite en `<meta>`: de eso se
+encarga `X-Frame-Options: DENY` en `public/_headers` y `vercel.json`.
 
 ## Pendiente antes de publicar
 
@@ -157,7 +251,7 @@ build en cada push y pull request.
 ```
 src/
   components/   piezas de interfaz (una por sección)
-  pages/        rutas: portada, privacidad, términos, 404
+  pages/        rutas: portada, ficha de producto, privacidad, términos, 404
   data/         contenido editable: catálogo, FAQ, testimonios
   lib/          config, comercio, newsletter, analítica, SEO
   hooks/        metadatos de documento y comportamiento de modal
@@ -174,8 +268,7 @@ originals/                fotografía original, fuente de verdad
 
 ## Siguientes pasos posibles
 
-- Páginas de producto con URL propia (hoy la ficha es una modal).
-- Filtro por categoría en la rejilla, ahora que hay cuatro.
+- Páginas de colección (`/coleccion/day-one`), ahora que hay fichas propias.
 - Feed de Instagram vía Graph API (no se puede raspar: Instagram lo bloquea).
 - Carrito, inventario y checkout nativo en lugar de enlace externo.
 - Migrar a TypeScript (por eso `react/prop-types` está desactivado en ESLint).

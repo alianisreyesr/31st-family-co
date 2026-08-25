@@ -2,17 +2,19 @@
  * Punto de entrada de estilos. Se importa solo desde `main.jsx` (nunca desde un
  * componente) para que el build de SSR no tenga que resolver CSS.
  *
- * Las fuentes ya NO se cargan con @import: ahora van con <link> en index.html.
- * Un @import dentro del CSS obliga al navegador a descargar y parsear la hoja
- * antes de descubrir la fuente, encadenando dos viajes de red antes de pintar
- * el primer texto.
+ * `fonts.css` sí va aquí, y no con un <link> a Google como antes: ahora las
+ * fuentes están auto-hospedadas, y Vite mete este @import en la misma hoja al
+ * compilar, así que no añade ningún viaje de red. Los archivos críticos se
+ * precargan desde index.html para que se pidan sin esperar al CSS.
  */
+@import './fonts.css';
 @import './tokens.css';
 @import './base.css';
 @import './header.css';
 @import './hero.css';
 @import './products.css';
 @import './modal.css';
+@import './product-page.css';
 @import './statement.css';
 @import './promise.css';
 @import './faq.css';

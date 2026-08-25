@@ -1,15 +1,19 @@
 import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { ProductGallery } from './ProductGallery.jsx'
 import { OrderButton } from './OrderButton.jsx'
 import { formatPrice } from '../lib/commerce.js'
-import { statusLabels, categoryLabels, collectionLabels } from '../data/products.js'
+import { statusLabels, categoryLabels, collectionLabels, productPath } from '../data/products.js'
 import { useDialog } from '../hooks/useDialog.js'
 import { events } from '../lib/analytics.js'
 
 /**
- * Ficha de producto en modal. Paso intermedio hasta que existan páginas de
- * producto con URL propia: cubre la duda de «qué es exactamente esto» sin montar
- * routing por SKU.
+ * Ficha de producto en modal: vista rápida desde la portada, sin perder el sitio
+ * en la parrilla ni el filtro que estuviera aplicado.
+ *
+ * La página permanente de la pieza es `/producto/:id` (`src/pages/Product.jsx`),
+ * que es la que se comparte y la que indexa Google. Desde aquí se llega por
+ * «Ver la página de la pieza».
  */
 export function ProductModal({ product, onClose, onWaitlist }) {
   const panelRef = useRef(null)
@@ -105,6 +109,9 @@ export function ProductModal({ product, onClose, onWaitlist }) {
                 {upcoming ? 'Quiero acceso' : 'Avísame del restock'}
               </button>
             )}
+            <Link className="text-link" to={productPath(product)} onClick={onClose}>
+              Ver la página de la pieza <span aria-hidden="true">→</span>
+            </Link>
             <a className="text-link" href="#preguntas" onClick={onClose}>
               Envíos y devoluciones <span aria-hidden="true">→</span>
             </a>

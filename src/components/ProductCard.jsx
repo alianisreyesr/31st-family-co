@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom'
 import { ProductImage } from './ProductImage.jsx'
 import { OrderButton } from './OrderButton.jsx'
 import { formatPrice } from '../lib/commerce.js'
-import { statusLabels, categoryLabels, collectionLabels } from '../data/products.js'
+import { statusLabels, categoryLabels, collectionLabels, productPath } from '../data/products.js'
 import { track, events } from '../lib/analytics.js'
 
 /**
@@ -34,7 +35,26 @@ export function ProductCard({ product, onWaitlist, onOpenDetails, priority = fal
             {categoryLabels[product.category]}
             {product.collection && ` · ${collectionLabels[product.collection]}`}
           </p>
-          <h3>{product.name}</h3>
+          {/*
+            El título es un enlace real a la ficha, no un `onClick`: es el único
+            camino que un rastreador puede seguir hasta las páginas de producto,
+            y deja abrir la pieza en otra pestaña o copiar su dirección.
+
+            El colorway va en `aria-label` porque dos variantes comparten nombre
+            y si no habría dos enlaces «31st HeadBand» indistinguibles en la
+            lista de enlaces de un lector de pantalla. En un <span> oculto no
+            vale: al partir el texto en varios nodos el nombre sale pegado
+            («31st HeadBand— Negro»), igual que le pasaba al botón de abajo.
+          */}
+          <h3>
+            <Link
+              className="product-title-link"
+              to={productPath(product)}
+              aria-label={`${product.name} — ${product.colorway}`}
+            >
+              {product.name}
+            </Link>
+          </h3>
           <p className="product-color">{product.colorway}</p>
         </div>
         <strong className="product-price">

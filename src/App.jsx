@@ -5,6 +5,7 @@ import { AnnouncementBar } from './components/AnnouncementBar.jsx'
 import { Header } from './components/Header.jsx'
 import { Footer } from './components/Footer.jsx'
 import { Home } from './pages/Home.jsx'
+import { Product } from './pages/Product.jsx'
 import { Privacy } from './pages/Privacy.jsx'
 import { Terms } from './pages/Terms.jsx'
 import { NotFound } from './pages/NotFound.jsx'
@@ -23,7 +24,16 @@ function ScrollToTop() {
   const { pathname, hash } = useLocation()
 
   useEffect(() => {
-    if (hash) return
+    if (hash) {
+      /*
+       * Con enlaces entre rutas (`/#archivo` desde una ficha de producto) el
+       * navegador no salta al ancla: React Router cambia la URL sin recargar y
+       * el destino ni siquiera está montado cuando cambia el `location`. Se
+       * lleva el scroll a mano después del render.
+       */
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
     window.scrollTo(0, 0)
   }, [pathname, hash])
 
@@ -47,6 +57,7 @@ export default function App() {
       <main id="contenido">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/producto/:id" element={<Product />} />
           <Route path="/privacidad" element={<Privacy />} />
           <Route path="/terminos" element={<Terms />} />
           <Route path="*" element={<NotFound />} />

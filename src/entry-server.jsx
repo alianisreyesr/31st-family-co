@@ -17,5 +17,6 @@ export function render(url) {
   )
 }
 
-export { pages, findPageMeta, buildJsonLd } from './lib/seo.js'
+export { pages, findPageMeta, buildJsonLd, BRAND_IMAGE } from './lib/seo.js'
 export { config } from './lib/config.js'
+export { buildCsp } from './lib/csp.js'

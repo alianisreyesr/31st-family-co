@@ -17,4 +17,14 @@ export const brandImages = {
     width: 1024,
     height: 1365,
   },
+  'logo-wordmark': {
+    src: '/brand/logo-wordmark',
+    width: 480,
+    height: 350,
+  },
+  'logo-badge': {
+    src: '/brand/logo-badge',
+    width: 480,
+    height: 480,
+  },
 }
