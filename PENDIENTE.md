@@ -3,7 +3,7 @@
 Documento de trabajo. Objetivo inmediato: **una vista previa que el cliente
 pueda ver y aprobar, sin tocar el DNS de `31stfamilyco.com`.**
 
-Última revisión: 24 de agosto de 2026.
+Última revisión: 25 de agosto de 2026.
 
 ## Qué es el sitio ahora
 
@@ -16,6 +16,11 @@ Ninguna pieza se anuncia como disponible y ningún botón dice «comprar»: hay 
 test que lo impide. Si vuelve a haber stock, basta con poner `status:
 'available'` y `stock` en `src/data/products.js`; la tarjeta cambia sola a un
 botón de compra que resuelve un destino real.
+
+Cada pieza tiene además **su propia página** en `/producto/<id>`, con su foto
+como tarjeta social. Es lo que se comparte por WhatsApp y lo que indexa Google;
+la ficha en modal de la portada se queda como vista rápida. El `id` del catálogo
+es la URL pública: cambiarlo rompe los enlaces ya compartidos.
 
 ---
 
@@ -74,6 +79,13 @@ npm ci
 npm run dev
 ```
 
+### Marca
+
+- [ ] En la cabecera y en el pie sale el **logotipo real** (el monograma `31ST`),
+      no las letras compuestas con la tipografía del sitio.
+- [ ] En el pie se ve en crema sobre el negro, no en negro sobre negro.
+- [ ] El icono de la pestaña del navegador es el escudo.
+
 ### Portada
 
 - [ ] El hero muestra la foto de las gorras en la verja, con el sello EST. 2024.
@@ -101,13 +113,28 @@ npm run dev
 - [ ] El mismo botón dentro de la ficha de producto cierra la modal y hace lo
       mismo.
 
-### Ficha de producto
+### Ficha rápida (modal)
 
 - [ ] «Ver detalles» abre la modal con la foto grande.
 - [ ] En las piezas con varias fotos, las miniaturas cambian la principal.
 - [ ] En **Essential Tees** aparecen las tallas **XS S M L XL**.
 - [ ] En una gorra aparece «Talla única ajustable» y **ninguna** talla de camisa.
 - [ ] `Escape` cierra y el foco vuelve al botón que la abrió.
+- [ ] «Ver la página de la pieza» lleva a `/producto/<id>`.
+
+### Página de producto
+
+- [ ] El **nombre** de cualquier tarjeta es un enlace: lleva a su página.
+- [ ] En `/producto/cap-terracotta` se ve la gorra terracota, con galería,
+      detalles, «Talla única ajustable» y «Avísame del restock».
+- [ ] En `/producto/headband-black` el botón dice **«Quiero acceso»** y donde
+      iría el precio pone «Precio en el lanzamiento».
+- [ ] Ese botón baja al formulario y **pone el foco en el email**, nombrando la
+      pieza.
+- [ ] Abajo salen **otras piezas** y cada una lleva a su página.
+- [ ] La miga de pan («Inicio / El archivo / …») vuelve a la portada y baja a la
+      sección correspondiente.
+- [ ] `/producto/loquesea` da el **404**, no una ficha vacía.
 
 ### Family List
 
@@ -138,7 +165,20 @@ npm run build:ssg && npm run preview
 
 - [ ] «Ver código fuente» muestra los nombres de los productos en el HTML, no un
       `<div id="root">` vacío. Es lo que leen Google y los previews de WhatsApp.
-- [ ] Sin errores en la consola del navegador.
+- [ ] El build lista **10 rutas `producto/…/index.html`**, una por pieza.
+- [ ] En `http://localhost:4173/producto/cap-green`, «Ver código fuente» trae el
+      título de esa gorra y su foto en `og:image`, no el logotipo genérico.
+- [ ] `http://localhost:4173/producto/loquesea` responde **404**.
+- [ ] Sin errores en la consola del navegador. **En particular, ninguno que
+      empiece por «Refused to…»**: eso sería la CSP bloqueando algo. El build
+      imprime la política que publicó.
+- [ ] En la pestaña Red del navegador **no aparece ninguna petición a
+      `fonts.googleapis.com` ni a `fonts.gstatic.com`**: las fuentes salen de
+      `/fonts/`.
+
+El servidor de vista previa ya no hace fallback de SPA: sirve cada ruta desde su
+archivo y devuelve el 404 real, igual que Netlify o Vercel. Si devolviera la
+portada para todo, la comprobación de arriba no valdría de nada.
 
 ### Automático
 
@@ -146,11 +186,15 @@ npm run build:ssg && npm run preview
 npm run lint && npm test && npm run build:ssg
 ```
 
-66 pruebas. Cubren, entre otras cosas: que nada se anuncie como disponible sin
+102 pruebas. Cubren, entre otras cosas: que nada se anuncie como disponible sin
 stock, que no reaparezca la promesa de 30 días ni el envío gratis, que el
 catálogo no invente tallas, que las dos cintas usen fotos distintas, que el
-JSON-LD declare `SoldOut` y no `InStock`, que la hidratación no falle en ninguna
-ruta, y que una vista previa nunca salga indexable.
+JSON-LD declare `SoldOut` y no `InStock`, que ninguna pieza se quede sin página
+propia, que cada una se comparta con su propia foto, que un id inventado sea un
+404 y no una ficha vacía, que la hidratación no falle en ninguna ruta, y que una
+vista previa nunca salga indexable, que la CSP no abra un host que no esté
+conectado ni cierre uno que sí, y que los `preload` de fuentes no queden
+apuntando a archivos que ya no existen.
 
 ---
 
@@ -190,6 +234,12 @@ un registro, pero **ahora mismo la misma gorra sale dos veces en el archivo**.
 Conviene resolverlo antes de enseñárselo al cliente: o son dos piezas distintas
 y hace falta diferenciar las fotos, o es una y sobra una entrada.
 
+Ahora pesa más que antes: cada entrada tiene su propia URL indexable
+(`/producto/cap-green` y `/producto/reverse-1-31`), así que son **dos páginas
+casi idénticas** compitiendo entre sí en Google, que es exactamente lo que
+penaliza como contenido duplicado. Si sobra una, hay que borrar su entrada del
+catálogo antes de publicar: su ruta desaparece sola del sitemap.
+
 Las colecciones **Day One** y **Second Serie** ya están puestas, con filtro
 propio, tal como venían en el inventario.
 
@@ -225,10 +275,9 @@ panel sin tocar código:
 
 ## 5. Backlog
 
-- Páginas de producto con URL propia (hoy la ficha es una modal).
+- Páginas de colección (`/coleccion/day-one`), ahora que hay fichas propias.
 - Carrito y checkout propios para cuando vuelva a haber stock.
 - Prueba social: fotos de la comunidad o reseñas reales, con permiso.
 - Feed de Instagram vía Graph API. **No se puede raspar**: Instagram devuelve
   429 sin autenticación. Necesita un token de la cuenta.
 - Migrar a TypeScript (por eso `react/prop-types` está desactivado en ESLint).
-- Auto-hospedar las fuentes y añadir una CSP.

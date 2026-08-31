@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="footer">
       <div className="footer-top">
         <div>
-          <Logo as="plain" className="footer-logo" />
+          <Logo as="plain" className="footer-logo" variant="light" />
           <p>
             Born in Puerto Rico.
             <br />

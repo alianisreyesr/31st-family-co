@@ -6,16 +6,54 @@
     <meta name="theme-color" content="#121210" />
 
     <!--
-      Las fuentes van aquí, no en un @import del CSS: así el navegador las pide
-      en paralelo con la hoja de estilos en lugar de esperar a parsearla.
-      Se cargan 7 archivos en total (antes 11): Manrope 400/700/800,
-      Playfair 500 y su cursiva, DM Mono 400/500.
+      La política de seguridad de contenidos la escribe aquí `npm run build:ssg`,
+      deducida de la configuración: solo abre los hosts que estén realmente
+      conectados (Plausible, el proveedor de la lista). Va en <meta> y no en una
+      cabecera porque así viaja con el HTML y vale igual en Netlify, en Vercel o
+      arrastrando `dist/` a cualquier sitio, sin configurar nada.
+      `frame-ancestors` no se admite en <meta>: eso lo cubre X-Frame-Options,
+      que sí va en las cabeceras de los dos hosts.
     -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--csp-->
+
+    <!--
+      Fuentes auto-hospedadas (`npm run fonts`). Ya no hay preconnect a Google:
+      ni se le manda la IP de cada visitante ni hacen falta dos conexiones
+      nuevas antes de pedir el primer archivo.
+
+      Solo se precargan las cuatro caras de la primera pantalla, en su subconjunto
+      latino: el titular (Manrope 700 y la cursiva Playfair de «Somos familia.»),
+      el cuerpo (Manrope 400) y los rótulos en monoespaciada. El resto lo pide el
+      CSS cuando toca. `crossorigin` es obligatorio en el preload de fuentes: sin
+      él el navegador descarga el archivo dos veces.
+    -->
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/fonts/manrope-v20-400-latin.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/fonts/manrope-v20-700-latin.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/fonts/dm-mono-v16-500-latin.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/fonts/playfair-display-v40-500-italic-latin.woff2"
     />
 
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />

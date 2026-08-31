@@ -1,0 +1,181 @@
+/* Ficha de producto con URL propia (`/producto/:id`).
+ *
+ * Reutiliza las clases de la modal para el cuerpo del texto —`.modal-details`,
+ * `.modal-sizes`, `.modal-fit`— para que las dos vistas de la misma pieza no se
+ * separen visualmente con el tiempo. Lo propio de aquí es el envoltorio: miga de
+ * pan, dos columnas anchas y las piezas relacionadas. */
+
+.product-page {
+  padding: clamp(24px, 4vw, 44px) clamp(20px, 5vw, 76px) clamp(56px, 8vw, 96px);
+}
+
+/* --- Miga de pan ----------------------------------------------------------- */
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 clamp(28px, 4vw, 46px);
+  padding: 0;
+  list-style: none;
+  font: 500 var(--size-micro) / 1.4 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-cream);
+}
+
+/* El separador es decorativo y va en CSS: dentro del marcado lo leería el
+ * lector de pantalla como parte del nombre del enlace. */
+.breadcrumb li + li::before {
+  content: '/';
+  margin-right: 8px;
+  opacity: 0.5;
+}
+
+.breadcrumb a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.breadcrumb [aria-current='page'] {
+  color: var(--ink);
+}
+
+/* --- Cuerpo ---------------------------------------------------------------- */
+
+.product-page-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(28px, 5vw, 72px);
+  align-items: start;
+}
+
+.product-page-media .product-image {
+  height: auto;
+  aspect-ratio: 3 / 4;
+}
+
+.product-page-body h1 {
+  font-size: clamp(38px, 5vw, 68px);
+  font-weight: 700;
+}
+
+/* Los rótulos de sección (Detalles, Tallas, Ajuste) son etiquetas, no titulares:
+ * heredan el tamaño de titular de `base.css` y hay que devolverlos a su sitio. */
+.product-page-body h2 {
+  margin: 34px 0 12px;
+  font-size: var(--size-meta);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--muted-cream);
+}
+
+.product-page-colorway {
+  margin: 12px 0 0;
+  font-size: var(--size-body-sm);
+  color: var(--muted-cream);
+}
+
+.product-page-price {
+  margin: 18px 0 0;
+  font: 500 22px var(--font-mono);
+}
+
+.product-page-summary {
+  margin: 24px 0 0;
+  font-size: var(--size-body);
+  line-height: 1.75;
+}
+
+.product-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+/* --- Enlace del título en la tarjeta de la portada ------------------------- */
+
+.product-title-link {
+  text-decoration-color: transparent;
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s var(--ease);
+}
+
+.product-card:hover .product-title-link,
+.product-title-link:hover,
+.product-title-link:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+/* --- Piezas relacionadas --------------------------------------------------- */
+
+.related {
+  background: #e7e0d4;
+  border-top: 1px solid var(--line);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.related-card {
+  display: block;
+  min-width: 0;
+}
+
+.related-card .product-image {
+  height: clamp(220px, 26vw, 380px);
+  margin-bottom: 16px;
+}
+
+.related-card strong {
+  display: block;
+  font-size: var(--size-body);
+  letter-spacing: -0.03em;
+}
+
+.related-card .product-color {
+  display: block;
+  margin-top: 5px;
+}
+
+.related-card:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 1000px) {
+  .product-page-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-page-media .product-image {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+@media (max-width: 860px) {
+  .related-grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .related-card .product-image {
+    height: 90vw;
+    max-height: 420px;
+  }
+}

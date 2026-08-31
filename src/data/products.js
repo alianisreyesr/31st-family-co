@@ -278,3 +278,15 @@ export const archivedProducts = products.filter((product) => product.status === 
 export function findProduct(id) {
   return products.find((product) => product.id === id) ?? null
 }
+
+/**
+ * URL canónica de la ficha de una pieza. Los ids ya son kebab-case, únicos y
+ * estables, así que sirven de slug sin una segunda columna que mantener
+ * sincronizada. Cambiar un id rompe el enlace publicado: es un renombrado, no
+ * una edición cosmética.
+ *
+ * @param {object|string} product Producto o su id.
+ */
+export function productPath(product) {
+  return `/producto/${typeof product === 'string' ? product : product.id}`
+}

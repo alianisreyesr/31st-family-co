@@ -16,20 +16,32 @@
   transition: border-color 0.2s var(--ease);
 }
 
+/* El logotipo es una imagen, no texto compuesto: se dimensiona por la altura y
+ * el ancho lo deduce el navegador de las medidas reales del archivo. */
 .logo,
 .footer-logo {
-  font-size: 21px;
-  font-weight: 800;
-  letter-spacing: -0.09em;
-  line-height: 0.8;
+  display: block;
+  line-height: 0;
 }
 
-.logo span,
-.footer-logo span {
+.logo-mark {
   display: block;
-  margin: 7px 0 0 2px;
-  font: 500 var(--size-micro) / 1 var(--font-mono);
-  letter-spacing: 0.2em;
+  width: auto;
+  height: 40px;
+}
+
+.footer-logo .logo-mark {
+  height: 52px;
+}
+
+.logo:hover .logo-mark {
+  opacity: 0.75;
+}
+
+@media (max-width: 860px) {
+  .logo-mark {
+    height: 32px;
+  }
 }
 
 .nav {

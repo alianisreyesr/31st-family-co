@@ -9,6 +9,7 @@
     "build:ssg": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-server && node scripts/prerender.mjs",
     "preview": "vite preview",
     "images": "node scripts/optimize-images.mjs && prettier --write src/data/product-images.js",
+    "fonts": "node scripts/fetch-fonts.mjs && prettier --write src/styles/fonts.css",
     "brand": "node scripts/build-brand-assets.mjs && prettier --write src/data/brand-images.js",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{js,jsx,mjs,css,json,md,html}\"",

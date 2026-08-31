@@ -8,6 +8,7 @@ import { Faq } from '../components/Faq.jsx'
 import { Signup } from '../components/Signup.jsx'
 import { ProductModal } from '../components/ProductModal.jsx'
 import { StickyWaitlist } from '../components/StickyWaitlist.jsx'
+import { focusWaitlist } from '../lib/waitlist.js'
 
 export function Home() {
   const [selected, setSelected] = useState(null)
@@ -18,14 +19,11 @@ export function Home() {
 
   /**
    * «Quiero acceso» / «Avísame del restock» desde cualquier tarjeta: se recuerda
-   * la pieza, se lleva a la persona al formulario y se le pone el foco en el
-   * campo. Sin mover el foco, quien navega con teclado se queda donde estaba y
-   * el salto no le sirve de nada.
+   * la pieza y se lleva a la persona al formulario, con el foco puesto.
    */
   const joinWaitlist = useCallback((product) => {
     setInterest(product)
-    document.getElementById('familia')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    emailRef.current?.focus({ preventScroll: true })
+    focusWaitlist(emailRef)
   }, [])
 
   return (

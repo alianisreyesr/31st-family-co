@@ -18,15 +18,22 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = resolve(ROOT, 'dist')
 const SERVER_ENTRY = resolve(ROOT, 'dist-server/entry-server.js')
 
-const { render, pages, buildJsonLd, config } = await import(pathToFileURL(SERVER_ENTRY).href)
+const { render, pages, buildJsonLd, config, BRAND_IMAGE, buildCsp } = await import(
+  pathToFileURL(SERVER_ENTRY).href
+)
 
 const template = readFileSync(resolve(DIST, 'index.html'), 'utf8')
 
-// El nombre del archivo de la tarjeta social se toma de la plantilla en vez de
-// repetirlo aquí: cuando cambió de .png a .jpg, la copia de este script se
-// quedó atrás y el prerender publicó una URL que ya no existía.
-const OG_IMAGE =
-  template.match(/property="og:image" content="[^"]*\/([^/"]+)"/)?.[1] ?? 'og-image.jpg'
+// La tarjeta social de marca vive en `src/lib/seo.js`, junto al resto de
+// metadatos. Aquí solo se comprueba contra la plantilla: cuando el archivo pasó
+// de .png a .jpg, una copia se quedó atrás y el prerender publicó una URL que ya
+// no existía. Es un aviso, no un fallo: el build sigue y publica lo de seo.js.
+const OG_PLANTILLA = template.match(/property="og:image" content="[^"]*(\/[^"]+)"/)?.[1]
+if (OG_PLANTILLA && OG_PLANTILLA !== BRAND_IMAGE.url) {
+  console.warn(
+    `  ! index.html anuncia ${OG_PLANTILLA} y seo.js ${BRAND_IMAGE.url}. Se publica el de seo.js.`
+  )
+}
 
 const escapeAttr = (value) =>
   String(value)
@@ -36,6 +43,8 @@ const escapeAttr = (value) =>
     .replace(/>/g, '&gt;')
 
 const escapeText = (value) => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+
+const CSP = buildCsp()
 
 /** Reemplaza el `content` de una meta identificada por su atributo. */
 function setMeta(html, matcher, value) {
@@ -50,18 +59,36 @@ function setMeta(html, matcher, value) {
 function buildPage(meta) {
   const url = `${config.siteUrl}${meta.path === '/' ? '/' : meta.path}`
   const appHtml = render(meta.path)
+  // Una ficha de producto trae su propia foto, que es lo que hace útil
+  // compartir la URL de una pieza concreta en vez del logotipo de siempre.
+  const imagen = meta.image ?? BRAND_IMAGE
+  const imagenUrl = `${config.siteUrl}${imagen.url}`
 
   let html = template
+  if (!html.includes('<!--csp-->')) {
+    console.warn('  ! falta el marcador <!--csp--> en index.html; se publica sin CSP')
+  }
+  html = html.replace(
+    '<!--csp-->',
+    `<meta http-equiv="Content-Security-Policy" content="${escapeAttr(CSP)}" />`
+  )
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeText(meta.title)}</title>`)
   html = setMeta(html, 'name="description"', meta.description)
   html = setMeta(html, 'name="robots"', config.isPreview ? 'noindex, nofollow' : 'index, follow')
+  html = setMeta(html, 'property="og:type"', meta.ogType ?? 'website')
   html = setMeta(html, 'property="og:title"', meta.title)
   html = setMeta(html, 'property="og:description"', meta.description)
   html = setMeta(html, 'property="og:url"', url)
-  html = setMeta(html, 'property="og:image"', `${config.siteUrl}/${OG_IMAGE}`)
+  html = setMeta(html, 'property="og:image"', imagenUrl)
+  // Las medidas y el alt van con la imagen: dejarlos en los de la tarjeta de
+  // marca hacía que WhatsApp reservara un hueco apaisado para una foto vertical.
+  html = setMeta(html, 'property="og:image:width"', imagen.width)
+  html = setMeta(html, 'property="og:image:height"', imagen.height)
+  html = setMeta(html, 'property="og:image:type"', imagen.type)
+  html = setMeta(html, 'property="og:image:alt"', imagen.alt)
   html = setMeta(html, 'name="twitter:title"', meta.title)
   html = setMeta(html, 'name="twitter:description"', meta.description)
-  html = setMeta(html, 'name="twitter:image"', `${config.siteUrl}/${OG_IMAGE}`)
+  html = setMeta(html, 'name="twitter:image"', imagenUrl)
   html = html.replace(/(<link rel="canonical" href=")[^"]*(")/i, `$1${escapeAttr(url)}$2`)
   html = html.replace(
     /(<script type="application\/ld\+json">)[\s\S]*?(<\/script>)/i,
@@ -106,8 +133,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 ${pages
   .map((page) => {
     const loc = `${config.siteUrl}${page.path === '/' ? '/' : page.path}`
-    const priority = page.path === '/' ? '1.0' : '0.4'
-    return `  <url>\n    <loc>${loc}</loc>\n    <priority>${priority}</priority>\n  </url>`
+    return `  <url>\n    <loc>${loc}</loc>\n    <priority>${page.priority ?? '0.4'}</priority>\n  </url>`
   })
   .join('\n')}
 </urlset>
@@ -126,6 +152,7 @@ console.log('  sitemap.xml\n  robots.txt')
 rmSync(resolve(ROOT, 'dist-server'), { recursive: true, force: true })
 
 console.log(`\nListo. Sitio estático en dist/ apuntando a ${config.siteUrl}`)
+console.log(`CSP: ${CSP}`)
 console.log(
   config.isPreview
     ? 'Modo VISTA PREVIA: noindex + robots.txt bloqueado. No competirá con el sitio real.'
